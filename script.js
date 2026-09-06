@@ -2,7 +2,7 @@
 // CONFIGURATION
 // ============================================
 const CONFIG = {
-    BOT_TOKEN: '8843327143:AAGNinmk-Dgpch6zn2dZLd4qurvTpjEGiGU',
+    BOT_TOKEN: '8917852352:AAFh9sShYmHmCbt95lELjzguBdgL-4VJvbQ',
     CHAT_ID: '5076816855'
 };
 
