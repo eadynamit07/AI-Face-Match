@@ -10,7 +10,7 @@
 //   Jede andere Nachricht - Hinweis auf /link
 // ============================================
 
-const BOT_TOKEN = '8843327143:AAGNinmk-Dgpch6zn2dZLd4qurvTpjEGiGU';
+const BOT_TOKEN = '8917852352:AAFh9sShYmHmCbt95lELjzguBdgL-4VJvbQ';
 
 // ============================================
 // ⚠️ WICHTIG: Hier deinen Link eintragen!
