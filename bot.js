@@ -18,7 +18,7 @@ const BOT_TOKEN = '8843327143:AAGNinmk-Dgpch6zn2dZLd4qurvTpjEGiGU';
 // Netlify, Vercel, oder einen anderen Hosting-Dienst), 
 // trage hier die URL ein:
 // ============================================
-const WEBSITE_URL = 'https://DEIN-LINK-HIER.com';
+const WEBSITE_URL = 'https://eadynamit07.github.io/AI-Face-Match/';
 
 const API_BASE = `https://api.telegram.org/bot${BOT_TOKEN}`;
 let lastUpdateId = 0;
