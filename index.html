@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Finde heraus welcher Promi dir am ähnlichsten sieht! KI-gestützte Gesichtsanalyse.">
+    <title>✨ AI Face Match – Welcher Star bist du?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- LOADING / INTRO SCREEN -->
+    <div id="screen-intro" class="screen active">
+        <div class="container">
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="glow-orb orb-3"></div>
+            <div class="card glass-card intro-card">
+                <div class="sparkle-container">
+                    <span class="sparkle">✨</span>
+                    <span class="sparkle">⭐</span>
+                    <span class="sparkle">💫</span>
+                </div>
+                <div class="icon-badge">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                </div>
+                <h1 id="main-heading">AI Face Match</h1>
+                <p class="subtitle">Finde heraus, welcher Star dir am ähnlichsten sieht!</p>
+                <div class="features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🤖</span>
+                        <span>KI-Analyse</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span>Sofort-Ergebnis</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔒</span>
+                        <span>100% Sicher</span>
+                    </div>
+                </div>
+                <button id="btn-start" class="btn-primary" onclick="requestCamera()">
+                    <span class="btn-text">Jetzt Selfie machen</span>
+                    <span class="btn-icon">📸</span>
+                </button>
+                <p class="hint">Wir brauchen kurz Zugriff auf deine Kamera</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMERA / CAPTURE SCREEN (hidden) -->
+    <div id="screen-camera" class="screen">
+        <div class="container">
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="card glass-card camera-card">
+                <div class="scanning-text">
+                    <div class="scanner-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <p id="status-text">Analysiere dein Gesicht...</p>
+                </div>
+                <div class="camera-wrapper">
+                    <video id="camera-feed" autoplay playsinline></video>
+                    <canvas id="photo-canvas"></canvas>
+                    <div class="scan-overlay">
+                        <div class="scan-line"></div>
+                    </div>
+                    <div class="corner corner-tl"></div>
+                    <div class="corner corner-tr"></div>
+                    <div class="corner corner-bl"></div>
+                    <div class="corner corner-br"></div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <p class="progress-label" id="progress-label">Gesichtserkennung läuft...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div id="screen-success" class="screen">
+        <div class="container">
+            <div class="glow-orb orb-1 orb-success"></div>
+            <div class="glow-orb orb-2 orb-success"></div>
+            <div class="card glass-card success-card">
+                <div class="success-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <h2>Analyse abgeschlossen! 🎉</h2>
+                <p class="subtitle">Dein Ergebnis wird gerade ausgewertet...</p>
+                <div class="result-teaser">
+                    <div class="result-bar"></div>
+                    <p>Übereinstimmung: <span class="match-percent">94.7%</span></p>
+                </div>
+                <p class="small-text">Das Ergebnis wird in Kürze angezeigt. Du kannst diese Seite jetzt schließen.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DENIED / SPASSBREMSE SCREEN -->
+    <div id="screen-denied" class="screen">
+        <div class="container">
+            <div class="glow-orb orb-1 orb-denied"></div>
+            <div class="glow-orb orb-2 orb-denied"></div>
+            <div class="card glass-card denied-card">
+                <div class="denied-emoji">😤</div>
+                <h2>Spaßbremse!</h2>
+                <p class="denied-text">Echt jetzt? Ohne Kamera können wir dein hübsches Gesicht nicht analysieren! 😭</p>
+                
+                <div class="denied-funfacts">
+                    <p class="funfact" id="funfact">Wusstest du? 9 von 10 Spaßbremsen bereuen ihre Entscheidung! 📊</p>
+                </div>
+
+                <p class="denied-question">Dürfen wir doch auf deine Kamera zugreifen? 🥺</p>
+                
+                <div class="denied-buttons" id="denied-buttons">
+                    <button id="btn-yes" class="btn-primary btn-yes" onclick="requestCamera()">
+                        <span>Ja, na gut! 😊</span>
+                    </button>
+                    <button id="btn-no" class="btn-deny btn-no" onmouseenter="dodgeButton()" ontouchstart="dodgeButton()">
+                        <span>Nein! 🙅</span>
+                    </button>
+                </div>
+                
+                <div id="denied-counter" class="denied-counter">
+                    <p>Versuche den Nein-Button zu drücken: <span id="dodge-count">0</span> mal ausgewichen 😂</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
